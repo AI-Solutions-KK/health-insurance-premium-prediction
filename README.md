@@ -16,6 +16,12 @@ This project uses trained machine learning models to provide fast and reliable p
 
 ---
 
+Project Snap-Shots
+![home](snap_shot_2.png)
+
+![home](snap_shot_1.png)
+
+
 ## Key Features
 
 - Machine learning–based premium prediction
