@@ -4,6 +4,21 @@ A production-ready **Machine Learning web application** that predicts **health i
 The system is fully **cloud deployed**, with a clean separation between **UI** and **Model API**.
 
 ---
+- REPO: For model Deployment: Main model Repo 
+
+https://github.com/AI-Solutions-KK/health-insurance-premium-model-api.git
+
+
+- REPO : UI-APP - Practical Model use case 
+
+https://github.com/AI-Solutions-KK/health-insurance-premium-prediction-ui.git
+
+
+- APP : Live Deployed App: Model Test 
+
+https://health-insurance-premium-ui-gvhvh4esfqe9emb5.centralindia-01.azurewebsites.net/
+
+---
 
 ## 🔗 Live Architecture (Cloud Only)
 
