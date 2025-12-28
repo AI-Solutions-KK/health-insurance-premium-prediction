@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+
 # ==================================================
 # PAGE CONFIG
 # ==================================================
@@ -17,12 +18,19 @@ st.set_page_config(
 # API CONFIG
 # ==================================================
 API_URL = os.getenv("MODEL_API_URL")
+API_KEY = os.getenv("MODEL_API_KEY")
 
-if not API_URL:
-    st.error("❌ MODEL_API_URL environment variable not set.")
+if not API_URL or not API_KEY:
+    st.error("❌ API configuration missing.")
     st.stop()
 
 API_URL = API_URL.rstrip("/") + "/predict"
+
+HEADERS = {
+    "Content-Type": "application/json",
+    "Ocp-Apim-Subscription-Key": API_KEY
+}
+
 
 # ==================================================
 # CUSTOM STYLES (UI ONLY)
@@ -159,7 +167,7 @@ if st.button("🔮 Predict Premium"):
 
     with st.spinner("⏳ Calculating premium..."):
         try:
-            response = requests.post(API_URL, json=payload, timeout=15)
+            response = requests.post(API_URL,json=payload,headers=HEADERS,timeout=15)
 
             if response.status_code == 200:
                 premium = response.json()["predicted_premium"]
