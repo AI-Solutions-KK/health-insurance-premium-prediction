@@ -11,7 +11,7 @@ load_dotenv()
 st.set_page_config(
     page_title="Health Insurance Premium Predictor",
     page_icon="🩺",
-    layout="centered"
+    layout="wide"
 )
 
 # ==================================================
@@ -100,93 +100,96 @@ AI-powered premium estimation • Secure • Cloud Deployed
 """, unsafe_allow_html=True)
 
 # ==================================================
-# BASIC DETAILS
+# MAIN LAYOUT - TWO COLUMNS
 # ==================================================
-st.markdown("<div class='card'><h3>👤 Personal Details</h3></div>", unsafe_allow_html=True)
+col_left, col_right = st.columns(2)
 
-c1, c2 = st.columns(2)
+# LEFT COLUMN - BASIC DETAILS & HEALTH
+with col_left:
+    st.markdown("<div class='card'><h3>👤 Personal Details</h3></div>", unsafe_allow_html=True)
 
-with c1:
-    age = st.number_input("🎂 Age", 18, 100, 30)
-    dependants = st.number_input("👨‍👩‍👧 Dependants", 0, 10, 0)
-    income = st.number_input("💰 Annual Income (Lakhs)", 0, 200, 10)
-    genetical_risk = st.slider("🧬 Genetic Risk Index", 0, 5, 1)
+    c1, c2 = st.columns(2)
 
-with c2:
-    gender = st.selectbox("⚧ Gender", ["Male", "Female"])
-    marital_status = st.selectbox("💍 Marital Status", ["Married", "Unmarried"])
-    employment_status = st.selectbox("🏢 Employment", ["Salaried", "Self-Employed"])
-    bmi = st.selectbox("⚖️ BMI Category", ["Normal", "Overweight", "Obesity", "Underweight"])
+    with c1:
+        age = st.number_input("🎂 Age", 18, 100, 30)
+        dependants = st.number_input("👨‍👩‍👧 Dependants", 0, 10, 0)
+        income = st.number_input("💰 Annual Income (Lakhs)", 0, 200, 10)
+        genetical_risk = st.slider("🧬 Genetic Risk Index", 0, 5, 1)
 
-# ==================================================
-# HEALTH & POLICY
-# ==================================================
-st.markdown("<div class='card'><h3>🩺 Health & Policy Details</h3></div>", unsafe_allow_html=True)
+    with c2:
+        gender = st.selectbox("⚧ Gender", ["Male", "Female"])
+        marital_status = st.selectbox("💍 Marital Status", ["Married", "Unmarried"])
+        employment_status = st.selectbox("🏢 Employment", ["Salaried", "Self-Employed"])
+        bmi = st.selectbox("⚖️ BMI Category", ["Normal", "Overweight", "Obesity", "Underweight"])
 
-c3, c4 = st.columns(2)
+# RIGHT COLUMN - POLICY & PREDICTION
+with col_right:
+    st.markdown("<div class='card'><h3>🩺 Health & Policy Details</h3></div>", unsafe_allow_html=True)
 
-with c3:
-    smoking = st.selectbox("🚬 Smoking Status", ["No", "Occasional", "Regular"])
-    medical_history = st.selectbox(
-        "📋 Pre-Existing Conditions",
-        [
-            "None",
-            "Diabetes",
-            "High blood pressure",
-            "Heart disease",
-            "Diabetes & High blood pressure",
-            "Diabetes & Heart disease",
-            "Thyroid",
-        ],
-    )
+    c3, c4 = st.columns(2)
 
-with c4:
-    insurance_plan = st.selectbox("📄 Insurance Plan", ["Bronze", "Silver", "Gold"])
-    region = st.selectbox("🌍 Region", ["Northwest", "Southeast", "Southwest"])
+    with c3:
+        smoking = st.selectbox("🚬 Smoking Status", ["No", "Occasional", "Regular"])
+        medical_history = st.selectbox(
+            "📋 Pre-Existing Conditions",
+            [
+                "None",
+                "Diabetes",
+                "High blood pressure",
+                "Heart disease",
+                "Diabetes & High blood pressure",
+                "Diabetes & Heart disease",
+                "Thyroid",
+            ],
+        )
 
-# ==================================================
-# PREDICTION
-# ==================================================
-st.markdown("<br>", unsafe_allow_html=True)
+    with c4:
+        insurance_plan = st.selectbox("📄 Insurance Plan", ["Bronze", "Silver", "Gold"])
+        region = st.selectbox("🌍 Region", ["Northwest", "Southeast", "Southwest"])
 
-if st.button("🔮 Predict Premium"):
-    payload = {
-        "age": age,
-        "dependants": dependants,
-        "income": income,
-        "genetical_risk": genetical_risk,
-        "insurance_plan": insurance_plan,
-        "gender": gender,
-        "marital_status": marital_status,
-        "employment_status": employment_status,
-        "bmi": bmi,
-        "smoking": smoking,
-        "region": region,
-        "medical_history": medical_history,
-    }
+    # ==================================================
+    # PREDICTION BUTTON & RESULT
+    # ==================================================
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    with st.spinner("⏳ Calculating premium..."):
-        try:
-            response = requests.post(API_URL,json=payload,headers=HEADERS,timeout=15)
+    if st.button("🔮 Predict Premium"):
+        payload = {
+            "age": age,
+            "dependants": dependants,
+            "income": income,
+            "genetical_risk": genetical_risk,
+            "insurance_plan": insurance_plan,
+            "gender": gender,
+            "marital_status": marital_status,
+            "employment_status": employment_status,
+            "bmi": bmi,
+            "smoking": smoking,
+            "region": region,
+            "medical_history": medical_history,
+        }
 
-            if response.status_code == 200:
-                premium = response.json()["predicted_premium"]
+        with st.spinner("⏳ Calculating premium..."):
+            try:
+                response = requests.post(API_URL,json=payload,headers=HEADERS,timeout=15)
 
-                st.markdown(
-                    f"""
-                    <div class="card" style="text-align:center;">
-                        <h3>💸 Estimated Annual Premium</h3>
-                        <div class="badge">₹ {premium:,}</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                if response.status_code == 200:
+                    premium = response.json()["predicted_premium"]
 
-            else:
-                st.error(f"❌ API Error ({response.status_code})")
+                    st.markdown(
+                        f"""
+                        <div class="card" style="text-align:center;">
+                            <h3>💸 Estimated Annual Premium</h3>
+                            <div class="badge">₹ {premium:,}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
-        except requests.exceptions.RequestException:
-            st.error("❌ Unable to connect to Model API")
+                else:
+                    st.error(f"❌ API Error ({response.status_code})")
+
+            except requests.exceptions.RequestException:
+                st.error("❌ Unable to connect to Model API")
 
 # ==================================================
 # FOOTER
